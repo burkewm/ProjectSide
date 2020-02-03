@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - Wall
+  - Wall_NoJump
   layers:
   - Default
   - TransparentFX
