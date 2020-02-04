@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+
 public class PlayerController : MonoBehaviour
 {
     PlayerControls controls;
@@ -35,7 +37,7 @@ public class PlayerController : MonoBehaviour
 
 
     //Input Checks
-    bool isFiring = false;
+   // bool isFiring = false;
     private void Awake()
     {
         controls = new PlayerControls();
