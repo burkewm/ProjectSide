@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     PlayerControls controls;
     Vector2 movement;
+    Vector2 aimDirection;
 
     //Movement Speed
     public float movePower;
@@ -20,20 +21,34 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     public int jumpCount;
     public bool canjump;
+
+    //Gun Info
+    public GameObject projectile;
     
 
     //Wall Jump Checks
     public bool wallJumpLeft = false;
     public bool wallJumpRight = false;
 
+
+
+
+
+    //Input Checks
+    bool isFiring = false;
     private void Awake()
     {
         controls = new PlayerControls();
         controls.Player.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => movement = Vector2.zero;
 
+        controls.Player.Look.performed += ctx => aimDirection = ctx.ReadValue<Vector2>();
+        controls.Player.Look.canceled += ctx => aimDirection = Vector2.zero;
+
         controls.Player.Jump.performed += ctx => Jump();
         controls.Player.Jump.performed += ctx => WallJump();
+
+        controls.Player.Shoot.performed += ctx => StartCoroutine(FireGun());
     }
 
     private void OnEnable()
@@ -52,6 +67,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Movement();
+        Aiming();
     }
 
     public void Jump()
@@ -60,7 +76,7 @@ public class PlayerController : MonoBehaviour
         {
             this.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             var explosionForce = new Vector2(0, jumpForce);
-            var transform = new Vector2(this.transform.position.x, this.transform.position.y);
+            var transform = new Vector2(this.transform.position.x, this.transform.position.y) * Time.deltaTime;
             this.GetComponent<Rigidbody2D>().AddForceAtPosition(explosionForce, transform);
             jumpCount++;
         }
@@ -70,6 +86,23 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 m = new Vector2(movement.x, 0) * movePower * Time.deltaTime;
         transform.Translate(m, Space.World);
+    }
+
+    public void Aiming() {
+        Vector2 aim = new Vector2(aimDirection.x, aimDirection.y) * Time.deltaTime;
+        //Debug.Log("currently Aiming At" + aimDirection);
+    }
+
+    public IEnumerator FireGun() {
+        if (aimDirection != new Vector2(0, 0)) {
+            var bullet = Instantiate(projectile, new Vector3(this.transform.position.x, this.transform.position.y, 0), Quaternion.AngleAxis(0, aimDirection));
+            Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+            bullet.GetComponent<Rigidbody2D>().AddForce(aimDirection * 1000);
+            Destroy(bullet, 5f);
+            yield return new WaitForSeconds(0.2f);
+            Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>(), false);
+
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
