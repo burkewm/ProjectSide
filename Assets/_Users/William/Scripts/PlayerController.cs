@@ -12,10 +12,12 @@ public class PlayerController : MonoBehaviour
     Vector2 aimDirection;
 
     //Movement Speed
+    [Header("Movement Settings")]
     public float movePower;
     private float storedMovePower;
 
     //Calculate Jumps
+    [Header("Jump Settings")]
     public float jumpForce;
     public float wallJumpForce;
     public float wallJumpCoolDown;
@@ -23,22 +25,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     public int jumpCount;
     public bool canjump;
-
-    //Gun Info
-    public GameObject projectile;
     
 
     //Wall Jump Checks
     public bool wallJumpLeft = false;
     public bool wallJumpRight = false;
-    
 
-
-
+    //For Guns
+    [Header("Gun Settings")]
+    public float FireRate;
+    public float lastFired;
+    public bool isAuto;
+    public GameObject projectile;
 
 
     //Input Checks
-   // bool isFiring = false;
+    bool isFiring = false;
+
     private void Awake()
     {
         controls = new PlayerControls();
@@ -51,12 +54,18 @@ public class PlayerController : MonoBehaviour
         controls.Player.Jump.performed += ctx => Jump();
         controls.Player.Jump.performed += ctx => WallJump();
 
-        controls.Player.Shoot.performed += ctx => StartCoroutine(FireGun());
+        controls.Player.Shoot.performed +=  FireAction;
+        controls.Player.Shoot.performed += ctx => StartCoroutine(FireSemiAuto());
+        //controls.Player.Shoot.performed += ctx => shootButton = false;
     }
 
     private void OnEnable()
     {
         controls.Enable();
+    }
+
+    private void OnDisable() {
+        controls.Disable();
     }
     // Start is called before the first frame update
     void Start()
@@ -75,6 +84,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate() {
         Movement();
         Aiming();
+        StartCoroutine(FireGunAuto());  
     }
 
     public void Jump()
@@ -101,15 +111,32 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("currently Aiming At" + aimDirection);
     }
 
-    public IEnumerator FireGun() {
-        if (aimDirection != new Vector2(0, 0)) {
-            var bullet = Instantiate(projectile, new Vector3(this.transform.position.x, this.transform.position.y, 0), Quaternion.AngleAxis(0, aimDirection));
-            Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
-            bullet.GetComponent<Rigidbody2D>().AddForce(aimDirection * 1000);
-            Destroy(bullet, 5f);
-            yield return new WaitForSeconds(0.2f);
-            Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>(), false);
+    public IEnumerator FireGunAuto() {
+        
+        if (aimDirection != new Vector2(0, 0) && isFiring && isAuto) {
+            if (Time.time - lastFired > 1 / FireRate) {
+                lastFired = Time.time;
+                var bullet = Instantiate(projectile, new Vector3(this.transform.position.x, this.transform.position.y, 0), Quaternion.AngleAxis(0, aimDirection));
+                Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+                bullet.GetComponent<Rigidbody2D>().AddForce(aimDirection * 1000);
+                Destroy(bullet, 5f);
+                yield return new WaitForSeconds(.2f);
+                Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>(), false);
+            }
+        }
+    }
 
+    public IEnumerator FireSemiAuto() {
+        if (aimDirection != new Vector2(0, 0) && isFiring && !isAuto) {
+            if (Time.time - lastFired > 1 / FireRate) {
+                lastFired = Time.time;
+                var bullet = Instantiate(projectile, new Vector3(this.transform.position.x, this.transform.position.y, 0), Quaternion.AngleAxis(0, aimDirection));
+                Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+                bullet.GetComponent<Rigidbody2D>().AddForce(aimDirection * 1000);
+                Destroy(bullet, 5f);
+                yield return new WaitForSeconds(.2f);
+                Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>(), false);
+            }
         }
     }
 
@@ -150,5 +177,10 @@ public class PlayerController : MonoBehaviour
     public IEnumerator Testing() {
         yield return new WaitForSeconds(2f);
         Debug.Log("Action Not Canned");
+    }
+
+    void FireAction(InputAction.CallbackContext context) {
+        var value = context.ReadValue<float>();
+        isFiring = value >= .5f;
     }
 }
