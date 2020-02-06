@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     [Header("Gun Settings")]
     public float FireRate;
     public float lastFired;
+    public float bulletForce;
     public bool isAuto;
     public GameObject projectile;
 
@@ -118,7 +119,7 @@ public class PlayerController : MonoBehaviour
                 lastFired = Time.time;
                 var bullet = Instantiate(projectile, new Vector3(this.transform.position.x, this.transform.position.y, 0), Quaternion.AngleAxis(0, aimDirection));
                 Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
-                bullet.GetComponent<Rigidbody2D>().AddForce(aimDirection * 1000);
+                bullet.GetComponent<Rigidbody2D>().AddForce(aimDirection * bulletForce * 10);
                 Destroy(bullet, 5f);
                 yield return new WaitForSeconds(.2f);
                 Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>(), false);
@@ -132,7 +133,7 @@ public class PlayerController : MonoBehaviour
                 lastFired = Time.time;
                 var bullet = Instantiate(projectile, new Vector3(this.transform.position.x, this.transform.position.y, 0), Quaternion.AngleAxis(0, aimDirection));
                 Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
-                bullet.GetComponent<Rigidbody2D>().AddForce(aimDirection * 1000);
+                bullet.GetComponent<Rigidbody2D>().AddForce(aimDirection * bulletForce * 10);
                 Destroy(bullet, 5f);
                 yield return new WaitForSeconds(.2f);
                 Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>(), false);
