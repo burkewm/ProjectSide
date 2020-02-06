@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     //Wall Jump Checks
     public bool wallJumpLeft = false;
     public bool wallJumpRight = false;
+    
 
 
 
@@ -68,6 +69,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       
+    }
+
+    private void FixedUpdate() {
         Movement();
         Aiming();
     }
@@ -81,6 +86,7 @@ public class PlayerController : MonoBehaviour
             var transform = new Vector2(this.transform.position.x, this.transform.position.y) * Time.deltaTime;
             this.GetComponent<Rigidbody2D>().AddForceAtPosition(explosionForce, transform);
             jumpCount++;
+            
         }
     }
 
@@ -110,7 +116,7 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         
-        if (collision.gameObject.tag == "Ground" && jumpCount <= multiJumps && jumpCount > 0)
+        if (collision.gameObject.tag == "Ground" && jumpCount <= multiJumps && jumpCount >= 0)
         {
             Debug.Log("Hit Ground, Reseting Jumps");
             jumpCount = 0;
@@ -139,5 +145,10 @@ public class PlayerController : MonoBehaviour
     public IEnumerator RestartMovement() {
         yield return new WaitForSeconds(wallJumpCoolDown);
         movePower = storedMovePower;
+    }
+
+    public IEnumerator Testing() {
+        yield return new WaitForSeconds(2f);
+        Debug.Log("Action Not Canned");
     }
 }
