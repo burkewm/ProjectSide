@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     public int jumpCount;
     public bool canjump;
-    
+
 
     //Wall Jump Checks
     public bool wallJumpLeft = false;
@@ -43,8 +43,7 @@ public class PlayerController : MonoBehaviour
     //Input Checks
     bool isFiring = false;
 
-    private void Awake()
-    {
+    private void Awake() {
         controls = new PlayerControls();
         controls.Player.Move.performed += ctx => movement = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => movement = Vector2.zero;
@@ -55,13 +54,12 @@ public class PlayerController : MonoBehaviour
         controls.Player.Jump.performed += ctx => Jump();
         controls.Player.Jump.performed += ctx => WallJump();
 
-        controls.Player.Shoot.performed +=  FireAction;
+        controls.Player.Shoot.performed += FireAction;
         controls.Player.Shoot.performed += ctx => StartCoroutine(FireSemiAuto());
         //controls.Player.Shoot.performed += ctx => shootButton = false;
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         controls.Enable();
     }
 
@@ -69,40 +67,35 @@ public class PlayerController : MonoBehaviour
         controls.Disable();
     }
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         storedMovePower = movePower;
         //Null out checks
 
     }
 
     // Update is called once per frame
-    void Update()
-    {
-       
+    void Update() {
+
     }
 
     private void FixedUpdate() {
         Movement();
         Aiming();
-        StartCoroutine(FireGunAuto());  
+        StartCoroutine(FireGunAuto());
     }
 
-    public void Jump()
-    {
-        if (jumpCount < multiJumps && canjump)
-        {
+    public void Jump() {
+        if (jumpCount < multiJumps && canjump) {
             this.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             var explosionForce = new Vector2(0, jumpForce);
             var transform = new Vector2(this.transform.position.x, this.transform.position.y) * Time.deltaTime;
             this.GetComponent<Rigidbody2D>().AddForceAtPosition(explosionForce, transform);
             jumpCount++;
-            
+
         }
     }
 
-    public void Movement()
-    {
+    public void Movement() {
         Vector2 m = new Vector2(movement.x, 0) * movePower * Time.deltaTime;
         transform.Translate(m, Space.World);
     }
@@ -113,7 +106,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public IEnumerator FireGunAuto() {
-        
+
         if (aimDirection != new Vector2(0, 0) && isFiring && isAuto) {
             if (Time.time - lastFired > 1 / FireRate) {
                 lastFired = Time.time;
@@ -139,6 +132,10 @@ public class PlayerController : MonoBehaviour
                 Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), this.GetComponent<Collider2D>(), false);
             }
         }
+    }
+
+    public void LookCheck() {
+    //check x value of move direction to flip sprite, also check aim direction as well!
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
