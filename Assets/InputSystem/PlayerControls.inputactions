@@ -369,9 +369,25 @@
             "id": "ee400d6a-681b-4bf0-ac3b-648f12b35558",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "DpadUP",
                     "type": "Button",
                     "id": "10b6e4ad-304e-4c01-8ca1-b9453f68c848",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "DpadDown",
+                    "type": "Button",
+                    "id": "aaa361a6-424b-4aef-a3e1-3784e0de66a5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Confirm",
+                    "type": "Button",
+                    "id": "66fd361b-29fc-4ed8-b33d-c411102e8d6d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -381,11 +397,33 @@
                 {
                     "name": "",
                     "id": "8c991897-2d2f-4950-8eae-5e2485de0ad5",
-                    "path": "",
+                    "path": "<Gamepad>/dpad/up",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "DpadUP",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "16dc694d-0801-4e37-941a-73a585397b87",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DpadDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "289dc0ba-369e-4a3f-8e19-78118391d4f7",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Confirm",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

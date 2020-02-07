@@ -382,9 +382,25 @@ public class @PlayerControls : IInputActionCollection, IDisposable
             ""id"": ""ee400d6a-681b-4bf0-ac3b-648f12b35558"",
             ""actions"": [
                 {
-                    ""name"": ""New action"",
+                    ""name"": ""DpadUP"",
                     ""type"": ""Button"",
                     ""id"": ""10b6e4ad-304e-4c01-8ca1-b9453f68c848"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""DpadDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""aaa361a6-424b-4aef-a3e1-3784e0de66a5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Confirm"",
+                    ""type"": ""Button"",
+                    ""id"": ""66fd361b-29fc-4ed8-b33d-c411102e8d6d"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -394,11 +410,33 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""8c991897-2d2f-4950-8eae-5e2485de0ad5"",
-                    ""path"": """",
+                    ""path"": ""<Gamepad>/dpad/up"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""DpadUP"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""16dc694d-0801-4e37-941a-73a585397b87"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DpadDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""289dc0ba-369e-4a3f-8e19-78118391d4f7"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -421,7 +459,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
-        m_UI_Newaction = m_UI.FindAction("New action", throwIfNotFound: true);
+        m_UI_DpadUP = m_UI.FindAction("DpadUP", throwIfNotFound: true);
+        m_UI_DpadDown = m_UI.FindAction("DpadDown", throwIfNotFound: true);
+        m_UI_Confirm = m_UI.FindAction("Confirm", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -576,12 +616,16 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     // UI
     private readonly InputActionMap m_UI;
     private IUIActions m_UIActionsCallbackInterface;
-    private readonly InputAction m_UI_Newaction;
+    private readonly InputAction m_UI_DpadUP;
+    private readonly InputAction m_UI_DpadDown;
+    private readonly InputAction m_UI_Confirm;
     public struct UIActions
     {
         private @PlayerControls m_Wrapper;
         public UIActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Newaction => m_Wrapper.m_UI_Newaction;
+        public InputAction @DpadUP => m_Wrapper.m_UI_DpadUP;
+        public InputAction @DpadDown => m_Wrapper.m_UI_DpadDown;
+        public InputAction @Confirm => m_Wrapper.m_UI_Confirm;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -591,16 +635,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_UIActionsCallbackInterface != null)
             {
-                @Newaction.started -= m_Wrapper.m_UIActionsCallbackInterface.OnNewaction;
-                @Newaction.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnNewaction;
-                @Newaction.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnNewaction;
+                @DpadUP.started -= m_Wrapper.m_UIActionsCallbackInterface.OnDpadUP;
+                @DpadUP.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnDpadUP;
+                @DpadUP.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnDpadUP;
+                @DpadDown.started -= m_Wrapper.m_UIActionsCallbackInterface.OnDpadDown;
+                @DpadDown.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnDpadDown;
+                @DpadDown.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnDpadDown;
+                @Confirm.started -= m_Wrapper.m_UIActionsCallbackInterface.OnConfirm;
+                @Confirm.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnConfirm;
+                @Confirm.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnConfirm;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Newaction.started += instance.OnNewaction;
-                @Newaction.performed += instance.OnNewaction;
-                @Newaction.canceled += instance.OnNewaction;
+                @DpadUP.started += instance.OnDpadUP;
+                @DpadUP.performed += instance.OnDpadUP;
+                @DpadUP.canceled += instance.OnDpadUP;
+                @DpadDown.started += instance.OnDpadDown;
+                @DpadDown.performed += instance.OnDpadDown;
+                @DpadDown.canceled += instance.OnDpadDown;
+                @Confirm.started += instance.OnConfirm;
+                @Confirm.performed += instance.OnConfirm;
+                @Confirm.canceled += instance.OnConfirm;
             }
         }
     }
@@ -620,6 +676,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     }
     public interface IUIActions
     {
-        void OnNewaction(InputAction.CallbackContext context);
+        void OnDpadUP(InputAction.CallbackContext context);
+        void OnDpadDown(InputAction.CallbackContext context);
+        void OnConfirm(InputAction.CallbackContext context);
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
+    public GameObject mainMenuUI;
+    public GameObject settingsUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,5 +32,13 @@ public class MainMenu : MonoBehaviour
     }
     public void ShowCredits() {
         //To Do
+    }
+    public void ShowSettings() {
+        mainMenuUI.SetActive(false);
+        settingsUI.SetActive(true);
+    }
+    public void ShowMainMenu() {
+        mainMenuUI.SetActive(true);
+        settingsUI.SetActive(false);
     }
 }
