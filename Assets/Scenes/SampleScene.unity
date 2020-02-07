@@ -1228,7 +1228,8 @@ MonoBehaviour:
   wallJumpRight: 0
   FireRate: 5
   lastFired: 0
-  isAuto: 0
+  bulletForce: 80
+  isAuto: 1
   projectile: {fileID: 5307096147917973554, guid: 2da3f021176bbdb47a0151eb8e45c7fe,
     type: 3}
 --- !u!212 &1599669563
