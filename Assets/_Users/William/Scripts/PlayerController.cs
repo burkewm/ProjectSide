@@ -38,10 +38,12 @@ public class PlayerController : MonoBehaviour
     public float bulletForce;
     public bool isAuto;
     public GameObject projectile;
+    public GameObject grenade;
 
 
     //Input Checks
     bool isFiring = false;
+    bool isThrowing = false;
 
     private void Awake() {
         controls = new PlayerControls();
@@ -56,6 +58,10 @@ public class PlayerController : MonoBehaviour
 
         controls.Player.Shoot.performed += FireAction;
         controls.Player.Shoot.performed += ctx => StartCoroutine(FireSemiAuto());
+
+        controls.Player.Grenade.performed += GrenadeAction;
+        controls.Player.Grenade.performed += ctx => ThrowGrenade();
+
         //controls.Player.Shoot.performed += ctx => shootButton = false;
     }
 
@@ -134,6 +140,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ThrowGrenade() {
+        if (aimDirection != new Vector2(0, 0)) {
+            if (Time.time - lastFired > 1 / FireRate) {
+                lastFired = Time.time;
+                var newGrenade = Instantiate(grenade, new Vector3(this.transform.position.x, this.transform.position.y, 0), Quaternion.AngleAxis(0, aimDirection));
+                Physics2D.IgnoreCollision(newGrenade.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
+                newGrenade.GetComponent<Rigidbody2D>().AddForce(aimDirection * bulletForce * 2.5f);
+                Destroy(newGrenade, 5f);
+                Physics2D.IgnoreCollision(newGrenade.GetComponent<Collider2D>(), this.GetComponent<Collider2D>(), false);
+            }
+        }
+    }
+
     public void LookCheck() {
     //check x value of move direction to flip sprite, also check aim direction as well!
     }
@@ -180,5 +199,10 @@ public class PlayerController : MonoBehaviour
     void FireAction(InputAction.CallbackContext context) {
         var value = context.ReadValue<float>();
         isFiring = value >= .5f;
+    }
+
+    void GrenadeAction(InputAction.CallbackContext context) {
+        var value = context.ReadValue<float>();
+        isThrowing = value >= .5f;
     }
 }
