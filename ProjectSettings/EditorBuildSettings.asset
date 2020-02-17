@@ -8,9 +8,15 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Users/William/Scenes/MainMenu.unity
     guid: 4f93457f347c9f244873d16772e61b00
+  - enabled: 0
+    path: Assets/Mirror/Examples/Discovery/Scenes/Scene.unity
+    guid: 90fddc74fa21c423599167eb28b09dd1
+  - enabled: 1
+    path: Assets/_Users/William/Scenes/Networked/GrayBox_Online.unity
+    guid: 976212d20544b1f4f936ceb56b76cbae
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: d7c3d2caed08436498a39391ff41d5cc,
       type: 2}
